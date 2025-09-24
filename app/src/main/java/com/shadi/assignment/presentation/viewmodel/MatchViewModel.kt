@@ -21,7 +21,7 @@ class MatchViewModel(
     private val acceptMatchUseCase: AcceptMatchUseCase,
     private val declineMatchUseCase: DeclineMatchUseCase
 ) : ViewModel() {
-    private val refreshTrigger = MutableStateFlow(Unit)
+    private val refreshTrigger = MutableStateFlow(0)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val matches: Flow<PagingData<UserProfile>> = refreshTrigger.flatMapLatest {
@@ -34,14 +34,14 @@ class MatchViewModel(
     fun acceptMatch(uuid: String) {
         viewModelScope.launch {
             acceptMatchUseCase.invoke(uuid)
-            refreshTrigger.value = Unit // trigger refresh
+            refreshTrigger.value++ // trigger refresh by incrementing
         }
     }
 
     fun declineMatch(uuid: String) {
         viewModelScope.launch {
             declineMatchUseCase.invoke(uuid)
-            refreshTrigger.value = Unit // trigger refresh
+            refreshTrigger.value++ // trigger refresh by incrementing
         }
     }
 }
