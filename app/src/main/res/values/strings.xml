@@ -7,4 +7,10 @@
     <string name="member_accepted">Member Accepted</string>
     <string name="member_declined">Member Declined</string>
     <string name="profile_image_desc">Profile picture of %1$s %2$s</string>
+    <string name="db_name">matchmate-db</string>
+    <string name="api_base_url">https://randomuser.me/</string>
+    <string name="error">Error: %1$s</string>
+    <string name="error_loading_more">Error loading more: %1$s</string>
+    <string name="no_matches_found">No matches found.</string>
+    <string name="offline_mode">Offline mode: showing cached data.</string>
 </resources>

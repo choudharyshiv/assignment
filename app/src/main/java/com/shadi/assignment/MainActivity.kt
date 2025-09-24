@@ -6,10 +6,6 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -47,18 +43,18 @@ class MainActivity : ComponentActivity() {
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
-            "matchmate-db"
+            getString(R.string.db_name)
         ).build()
         val userProfileDao = db.userProfileDao()
 
         // Instantiate Retrofit and API service
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://randomuser.me/")
+            .baseUrl(getString(R.string.api_base_url))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val apiService = retrofit.create(MatchApiService::class.java)
 
-        // Instantiate repository and use cases
+        // Instantiate repository and use cases //todo use DI
         val repository = MatchRepository(apiService, userProfileDao)
         val getMatchesUseCase = GetMatchesUseCase(repository)
         val acceptMatchUseCase = AcceptMatchUseCase(repository)
@@ -94,7 +90,7 @@ class MainActivity : ComponentActivity() {
                         progressBar.visibility = View.GONE
                         val errorMsg =
                             (loadStates.refresh as LoadState.Error).error.localizedMessage
-                        Toast.makeText(this@MainActivity, "Error: $errorMsg", Toast.LENGTH_LONG)
+                        Toast.makeText(this@MainActivity, getString(R.string.error, errorMsg), Toast.LENGTH_LONG)
                             .show()
                     }
 
@@ -103,14 +99,14 @@ class MainActivity : ComponentActivity() {
                         val errorMsg = (loadStates.append as LoadState.Error).error.localizedMessage
                         Snackbar.make(
                             recyclerView,
-                            "Error loading more: $errorMsg",
+                            getString(R.string.error_loading_more, errorMsg),
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
 
                     loadStates.refresh is LoadState.NotLoading && matchAdapter.itemCount == 0 -> {
                         progressBar.visibility = View.GONE
-                        Toast.makeText(this@MainActivity, "No matches found.", Toast.LENGTH_LONG)
+                        Toast.makeText(this@MainActivity, getString(R.string.no_matches_found), Toast.LENGTH_LONG)
                             .show()
                     }
 
@@ -123,23 +119,7 @@ class MainActivity : ComponentActivity() {
 
         // Offline indicator
         if (!NetworkUtils.isNetworkAvailable(this)) {
-            Toast.makeText(this, "Offline mode: showing cached data.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.offline_mode), Toast.LENGTH_LONG).show()
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AssignmentTheme {
-        Greeting("Android")
     }
 }
