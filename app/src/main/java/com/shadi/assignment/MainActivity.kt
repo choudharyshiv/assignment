@@ -2,10 +2,16 @@ package com.shadi.assignment
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -90,7 +96,11 @@ class MainActivity : ComponentActivity() {
                         progressBar.visibility = View.GONE
                         val errorMsg =
                             (loadStates.refresh as LoadState.Error).error.localizedMessage
-                        Toast.makeText(this@MainActivity, getString(R.string.error, errorMsg), Toast.LENGTH_LONG)
+                        Toast.makeText(
+                            this@MainActivity,
+                            getString(R.string.error, errorMsg),
+                            Toast.LENGTH_LONG
+                        )
                             .show()
                     }
 
@@ -106,7 +116,11 @@ class MainActivity : ComponentActivity() {
 
                     loadStates.refresh is LoadState.NotLoading && matchAdapter.itemCount == 0 -> {
                         progressBar.visibility = View.GONE
-                        Toast.makeText(this@MainActivity, getString(R.string.no_matches_found), Toast.LENGTH_LONG)
+                        Toast.makeText(
+                            this@MainActivity,
+                            getString(R.string.no_matches_found),
+                            Toast.LENGTH_LONG
+                        )
                             .show()
                     }
 
@@ -118,8 +132,14 @@ class MainActivity : ComponentActivity() {
         }
 
         // Offline indicator
-        if (!NetworkUtils.isNetworkAvailable(this)) {
-            Toast.makeText(this, getString(R.string.offline_mode), Toast.LENGTH_LONG).show()
+        val networkStatusText = findViewById<TextView>(R.id.networkStatusText)
+        if (NetworkUtils.isNetworkAvailable(this)) {
+            networkStatusText.text = getString(R.string.online)
+            networkStatusText.setTextColor(getColor(android.R.color.holo_green_dark))
+        } else {
+            networkStatusText.text = getString(R.string.offline)
+            networkStatusText.setTextColor(getColor(android.R.color.holo_red_dark))
         }
+
     }
 }
