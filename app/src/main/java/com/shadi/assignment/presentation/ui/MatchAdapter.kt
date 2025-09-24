@@ -35,9 +35,10 @@ class MatchAdapter(
         private val tvLocation: TextView = itemView.findViewById(R.id.tvLocation)
         private val tvEmail: TextView = itemView.findViewById(R.id.tvEmail)
         private val tvGender: TextView = itemView.findViewById(R.id.tvGender)
-        private val tvStatus: TextView = itemView.findViewById(R.id.tvStatus)
         private val btnAccept: Button = itemView.findViewById(R.id.btnAccept)
         private val btnDecline: Button = itemView.findViewById(R.id.btnDecline)
+        private val layoutAction: View = itemView.findViewById(R.id.layoutAction)
+        private val tvStatusAction: TextView = itemView.findViewById(R.id.tvStatusAction)
 
         fun bind(profile: UserProfile, onAccept: (String) -> Unit, onDecline: (String) -> Unit) {
             val context = itemView.context
@@ -51,10 +52,26 @@ class MatchAdapter(
             btnDecline.text = context.getString(R.string.decline)
             btnAccept.setOnClickListener { onAccept(profile.uuid) }
             btnDecline.setOnClickListener { onDecline(profile.uuid) }
-            tvStatus.text = when (profile.status) {
-                Status.ACCEPTED -> context.getString(R.string.member_accepted)
-                Status.DECLINED -> context.getString(R.string.member_declined)
-                else -> ""
+
+            when (profile.status) {
+                Status.ACCEPTED -> {
+                    layoutAction.visibility = View.GONE
+                    tvStatusAction.visibility = View.VISIBLE
+                    tvStatusAction.text = context.getString(R.string.member_accepted)
+                    tvStatusAction.setBackgroundResource(R.drawable.bg_status_accepted)
+                    tvStatusAction.setTextColor(context.getColor(android.R.color.white))
+                }
+                Status.DECLINED -> {
+                    layoutAction.visibility = View.GONE
+                    tvStatusAction.visibility = View.VISIBLE
+                    tvStatusAction.text = context.getString(R.string.member_declined)
+                    tvStatusAction.setBackgroundResource(R.drawable.bg_status_declined)
+                    tvStatusAction.setTextColor(context.getColor(android.R.color.white))
+                }
+                else -> {
+                    layoutAction.visibility = View.VISIBLE
+                    tvStatusAction.visibility = View.GONE
+                }
             }
         }
     }
