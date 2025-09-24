@@ -2,74 +2,34 @@ package com.shadi.assignment
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.google.android.material.snackbar.Snackbar
-import com.shadi.assignment.data.local.AppDatabase
-import com.shadi.assignment.data.remote.MatchApiService
-import com.shadi.assignment.data.repository.MatchRepository
 import com.shadi.assignment.domain.model.UserProfile
-import com.shadi.assignment.domain.usecase.AcceptMatchUseCase
-import com.shadi.assignment.domain.usecase.DeclineMatchUseCase
-import com.shadi.assignment.domain.usecase.GetMatchesUseCase
 import com.shadi.assignment.presentation.ui.MatchAdapter
 import com.shadi.assignment.presentation.viewmodel.MatchViewModel
-import com.shadi.assignment.presentation.viewmodel.MatchViewModelFactory
-import com.shadi.assignment.ui.theme.AssignmentTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var matchAdapter: MatchAdapter
-    private lateinit var viewModel: MatchViewModel
+    private val viewModel: MatchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
-        // Instantiate Room database and DAO
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            getString(R.string.db_name)
-        ).build()
-        val userProfileDao = db.userProfileDao()
-
-        // Instantiate Retrofit and API service
-        val retrofit = Retrofit.Builder()
-            .baseUrl(getString(R.string.api_base_url))
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val apiService = retrofit.create(MatchApiService::class.java)
-
-        // Instantiate repository and use cases //todo use DI
-        val repository = MatchRepository(apiService, userProfileDao)
-        val getMatchesUseCase = GetMatchesUseCase(repository)
-        val acceptMatchUseCase = AcceptMatchUseCase(repository)
-        val declineMatchUseCase = DeclineMatchUseCase(repository)
-
-        // Create ViewModel factory and get ViewModel
-        val factory =
-            MatchViewModelFactory(getMatchesUseCase, acceptMatchUseCase, declineMatchUseCase)
-        viewModel = ViewModelProvider(this, factory)[MatchViewModel::class.java]
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -140,6 +100,5 @@ class MainActivity : ComponentActivity() {
             networkStatusText.text = getString(R.string.offline)
             networkStatusText.setTextColor(getColor(android.R.color.holo_red_dark))
         }
-
     }
 }

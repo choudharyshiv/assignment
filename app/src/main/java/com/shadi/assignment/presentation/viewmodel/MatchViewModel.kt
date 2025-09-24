@@ -10,13 +10,16 @@ import com.shadi.assignment.domain.model.UserProfile
 import com.shadi.assignment.domain.usecase.AcceptMatchUseCase
 import com.shadi.assignment.domain.usecase.DeclineMatchUseCase
 import com.shadi.assignment.domain.usecase.GetMatchesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
-class MatchViewModel(
+@HiltViewModel
+class MatchViewModel @Inject constructor(
     private val getMatchesUseCase: GetMatchesUseCase,
     private val acceptMatchUseCase: AcceptMatchUseCase,
     private val declineMatchUseCase: DeclineMatchUseCase

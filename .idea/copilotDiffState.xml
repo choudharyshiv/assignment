@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/app/src/main/res/values-night/colors.xml">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/res/values-night/colors.xml" />
+              <option name="originalContent" value="&lt;resources&gt;&#10;    &lt;color name=&quot;black&quot;&gt;#FF121212&lt;/color&gt;&#10;    &lt;color name=&quot;white&quot;&gt;#FF1E1E1E&lt;/color&gt;&#10;    &lt;color name=&quot;purple_500&quot;&gt;#BB86FC&lt;/color&gt;&#10;    &lt;color name=&quot;purple_700&quot;&gt;#3700B3&lt;/color&gt;&#10;    &lt;color name=&quot;teal_200&quot;&gt;#03DAC5&lt;/color&gt;&#10;    &lt;color name=&quot;teal_700&quot;&gt;#03DAC5&lt;/color&gt;&#10;&lt;/resources&gt;&#10;" />
+              <option name="updatedContent" value="&lt;resources&gt;&#10;    &lt;color name=&quot;black&quot;&gt;#FF121212&lt;/color&gt;&#10;    &lt;color name=&quot;white&quot;&gt;#FF1E1E1E&lt;/color&gt;&#10;    &lt;color name=&quot;purple_500&quot;&gt;#BB86FC&lt;/color&gt;&#10;    &lt;color name=&quot;purple_700&quot;&gt;#3700B3&lt;/color&gt;&#10;    &lt;color name=&quot;teal_200&quot;&gt;#03DAC5&lt;/color&gt;&#10;    &lt;color name=&quot;teal_700&quot;&gt;#03DAC5&lt;/color&gt;&#10;&lt;/resources&gt;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
