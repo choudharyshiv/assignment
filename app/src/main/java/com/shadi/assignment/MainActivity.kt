@@ -1,5 +1,8 @@
 package com.shadi.assignment
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
@@ -25,6 +28,8 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private lateinit var matchAdapter: MatchAdapter
     private val viewModel: MatchViewModel by viewModels()
+    private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +38,7 @@ class MainActivity : ComponentActivity() {
         setupRecyclerView()
         observeMatches()
         observeLoadState()
-        updateNetworkStatus()
+        setupNetworkCallback()
     }
 
     private fun setupRecyclerView() {
@@ -97,14 +102,37 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun updateNetworkStatus() {
+    private fun setupNetworkCallback() {
+        connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                runOnUiThread { updateNetworkStatus(true) }
+            }
+
+            override fun onLost(network: Network) {
+                runOnUiThread { updateNetworkStatus(false) }
+            }
+        }
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        // Set initial status
+        updateNetworkStatus(NetworkUtils.isNetworkAvailable(this))
+    }
+
+    private fun updateNetworkStatus(isOnline: Boolean) {
         val networkStatusText = findViewById<TextView>(R.id.networkStatusText)
-        if (NetworkUtils.isNetworkAvailable(this)) {
+        if (isOnline) {
             networkStatusText.text = getString(R.string.online)
             networkStatusText.setTextColor(getColor(android.R.color.holo_green_dark))
         } else {
             networkStatusText.text = getString(R.string.offline)
             networkStatusText.setTextColor(getColor(android.R.color.holo_red_dark))
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::connectivityManager.isInitialized && ::networkCallback.isInitialized) {
+            connectivityManager.unregisterNetworkCallback(networkCallback)
         }
     }
 }
