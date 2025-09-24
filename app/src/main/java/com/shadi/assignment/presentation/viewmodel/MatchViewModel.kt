@@ -10,6 +10,7 @@ import com.shadi.assignment.domain.model.UserProfile
 import com.shadi.assignment.domain.usecase.AcceptMatchUseCase
 import com.shadi.assignment.domain.usecase.DeclineMatchUseCase
 import com.shadi.assignment.domain.usecase.GetMatchesUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -22,6 +23,7 @@ class MatchViewModel(
 ) : ViewModel() {
     private val refreshTrigger = MutableStateFlow(Unit)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val matches: Flow<PagingData<UserProfile>> = refreshTrigger.flatMapLatest {
         Pager(
             config = PagingConfig(pageSize = 10),

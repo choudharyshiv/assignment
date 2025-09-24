@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.google.android.material.snackbar.Snackbar
 import com.shadi.assignment.data.local.AppDatabase
-import com.shadi.assignment.data.repository.MatchRepository
 import com.shadi.assignment.data.remote.MatchApiService
+import com.shadi.assignment.data.repository.MatchRepository
 import com.shadi.assignment.domain.model.UserProfile
 import com.shadi.assignment.domain.usecase.AcceptMatchUseCase
 import com.shadi.assignment.domain.usecase.DeclineMatchUseCase
@@ -65,7 +65,8 @@ class MainActivity : ComponentActivity() {
         val declineMatchUseCase = DeclineMatchUseCase(repository)
 
         // Create ViewModel factory and get ViewModel
-        val factory = MatchViewModelFactory(getMatchesUseCase, acceptMatchUseCase, declineMatchUseCase)
+        val factory =
+            MatchViewModelFactory(getMatchesUseCase, acceptMatchUseCase, declineMatchUseCase)
         viewModel = ViewModelProvider(this, factory)[MatchViewModel::class.java]
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
@@ -81,7 +82,6 @@ class MainActivity : ComponentActivity() {
                 matchAdapter.submitData(pagingData)
             }
         }
-
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         lifecycleScope.launch {
             matchAdapter.loadStateFlow.collectLatest { loadStates ->
