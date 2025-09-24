@@ -30,7 +30,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        setupRecyclerView()
+        observeMatches()
+        observeLoadState()
+        updateNetworkStatus()
+    }
 
+    private fun setupRecyclerView() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         matchAdapter = MatchAdapter(
@@ -38,20 +44,23 @@ class MainActivity : ComponentActivity() {
             onDecline = { uuid -> viewModel.declineMatch(uuid) }
         )
         recyclerView.adapter = matchAdapter
+    }
 
+    private fun observeMatches() {
         lifecycleScope.launch {
             viewModel.matches.collectLatest { pagingData: PagingData<UserProfile> ->
                 matchAdapter.submitData(pagingData)
             }
         }
+    }
+
+    private fun observeLoadState() {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         lifecycleScope.launch {
             matchAdapter.loadStateFlow.collectLatest { loadStates ->
                 when {
-                    loadStates.refresh is LoadState.Loading -> {
-                        progressBar.visibility = View.VISIBLE
-                    }
-
+                    loadStates.refresh is LoadState.Loading -> progressBar.visibility = View.VISIBLE
                     loadStates.refresh is LoadState.Error -> {
                         progressBar.visibility = View.GONE
                         val errorMsg =
@@ -60,8 +69,7 @@ class MainActivity : ComponentActivity() {
                             this@MainActivity,
                             getString(R.string.error, errorMsg),
                             Toast.LENGTH_LONG
-                        )
-                            .show()
+                        ).show()
                     }
 
                     loadStates.append is LoadState.Error -> {
@@ -80,18 +88,16 @@ class MainActivity : ComponentActivity() {
                             this@MainActivity,
                             getString(R.string.no_matches_found),
                             Toast.LENGTH_LONG
-                        )
-                            .show()
+                        ).show()
                     }
 
-                    loadStates.refresh is LoadState.NotLoading -> {
-                        progressBar.visibility = View.GONE
-                    }
+                    loadStates.refresh is LoadState.NotLoading -> progressBar.visibility = View.GONE
                 }
             }
         }
+    }
 
-        // Offline indicator
+    private fun updateNetworkStatus() {
         val networkStatusText = findViewById<TextView>(R.id.networkStatusText)
         if (NetworkUtils.isNetworkAvailable(this)) {
             networkStatusText.text = getString(R.string.online)
