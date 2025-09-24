@@ -2,7 +2,7 @@ package com.shadi.assignment.presentation.viewmodel
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.shadi.assignment.App
+import com.shadi.assignment.AssignmentApp
 import com.shadi.assignment.NetworkUtils
 import com.shadi.assignment.domain.model.UserProfile
 import com.shadi.assignment.domain.usecase.GetMatchesUseCase
@@ -16,7 +16,7 @@ class MatchPagingSource(
         val page = params.key ?: 1
         return try {
             // Use application context directly for network check
-            val isNetworkAvailable = NetworkUtils.isNetworkAvailable(App.instance.applicationContext)
+            val isNetworkAvailable = NetworkUtils.isNetworkAvailable(AssignmentApp.instance.applicationContext)
             if (isNetworkAvailable) {
                 // Fetch remote and cache
                 getMatchesUseCase.fetchRemote(page, params.loadSize)
